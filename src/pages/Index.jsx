@@ -1,11 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 const Index = () => {
+  const [playlists, setPlaylists] = useState(["Playlist 1", "Playlist 2", "Playlist 3"]);
+  const [newPlaylistName, setNewPlaylistName] = useState("");
+
+  const handleCreatePlaylist = () => {
+    if (newPlaylistName.trim() !== "") {
+      setPlaylists([...playlists, newPlaylistName]);
+      setNewPlaylistName("");
+    }
+  };
+
   return (
     <div className="h-screen w-screen flex flex-col items-center justify-center bg-gray-100">
       <header className="w-full p-4 bg-blue-600 text-white text-center">
@@ -56,11 +67,28 @@ const Index = () => {
                     <CardTitle>Your Playlists</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p>Playlist 1</p>
-                    <p>Playlist 2</p>
-                    <p>Playlist 3</p>
+                    {playlists.map((playlist, index) => (
+                      <p key={index}>{playlist}</p>
+                    ))}
                   </CardContent>
                 </Card>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button>Create New Playlist</Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Create New Playlist</DialogTitle>
+                    </DialogHeader>
+                    <Input
+                      placeholder="Playlist Name"
+                      value={newPlaylistName}
+                      onChange={(e) => setNewPlaylistName(e.target.value)}
+                      className="mb-4"
+                    />
+                    <Button onClick={handleCreatePlaylist}>Create</Button>
+                  </DialogContent>
+                </Dialog>
               </ScrollArea>
             </TabsContent>
           </Tabs>

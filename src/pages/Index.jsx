@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -9,12 +9,43 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 const Index = () => {
   const [playlists, setPlaylists] = useState(["Playlist 1", "Playlist 2", "Playlist 3"]);
   const [newPlaylistName, setNewPlaylistName] = useState("");
+  const [currentSong, setCurrentSong] = useState(null);
+  const audioRef = useRef(null);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+    if (currentSong) {
+      audioRef.current = new Audio(currentSong);
+      audioRef.current.play();
+    }
+  }, [currentSong]);
 
   const handleCreatePlaylist = () => {
     if (newPlaylistName.trim() !== "") {
       setPlaylists([...playlists, newPlaylistName]);
       setNewPlaylistName("");
     }
+  };
+
+  const handlePlay = (song) => {
+    setCurrentSong(song);
+  };
+
+  const handlePause = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+  };
+
+  const handleStop = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    setCurrentSong(null);
   };
 
   return (
@@ -37,9 +68,11 @@ const Index = () => {
                     <CardTitle>Top Hits</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p>Song 1</p>
-                    <p>Song 2</p>
-                    <p>Song 3</p>
+                    <p>Song 1 <Button onClick={() => handlePlay('song1.mp3')}>Play</Button></p>
+                    <p>Song 2 <Button onClick={() => handlePlay('song2.mp3')}>Play</Button></p>
+                    <p>Song 3 <Button onClick={() => handlePlay('song3.mp3')}>Play</Button></p>
+                    <Button onClick={handlePause}>Pause</Button>
+                    <Button onClick={handleStop}>Stop</Button>
                   </CardContent>
                 </Card>
                 <Card className="mb-4">
